@@ -3,62 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcul Frais Enchères</title>
+    <title>Calcul Frais Enchères & Prix Gramme</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; background: #f5f5f5; }
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; background: #f5f5f5; }
         input, select { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
         button { background: #007bff; color: white; padding: 12px; border: none; width: 100%; cursor: pointer; font-size: 16px; }
         button:hover { background: #0056b3; }
         .result { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .result p { font-size: 18px; margin: 10px 0; }
         label { font-weight: bold; }
+        .section { background: white; padding: 25px; border-radius: 12px; margin: 30px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .section h2 { color: #333; margin-top: 0; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        .gramme-result { background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 5px solid #28a745; }
     </style>
 </head>
 <body>
-    <h1>Calcul Prix Final Enchère</h1>
-    <label>Prix de l'enchère (€) :</label>
-    <input type="number" id="prix" step="0.01" placeholder="ex: 18500" required>
+    <h1>🛒 Calcul Enchères & Or</h1>
     
-    <label>Frais de vente (%) :</label>
-    <select id="pourcentage">
-        <option value="14.4">14.4% TTC (Alcopa std)</option>
-        <option value="14.28">14.28% TTC (judiciaire)</option>
-        <option value="25">25% TTC (volontaire)</option>
-        <option value="10">10% (immobilier approx)</option>
-        <option value="16">16% (Interencheres Or)</option>
-        <option value="custom">Autre (%)</option>
-    </select>
-    <input type="number" id="customPct" step="0.01" placeholder="ex: 12.5" style="display:none;" min="0" max="100">
-    
-    <button onclick="calculer()">Calculer</button>
-    
-    <div id="resultat" class="result" style="display:none;"></div>
+    <div class="section">
+        <h2>💰 Prix Final Enchère</h2>
+        <label>Prix de l'enchère (€) :</label>
+        <input type="number" id="prix" step="0.01" placeholder="ex: 18500">
+        
+        <label>Frais de vente (%) :</label>
+        <select id="pourcentage">
+            <option value="14.4">14.4% TTC (Alcopa std)</option>
+            <option value="14.28">14.28% TTC (judiciaire)</option>
+            <option value="25">25% TTC (volontaire)</option>
+            <option value="10">10% (immobilier approx)</option>
+            <option value="custom">Autre (%)</option>
+        </select>
+        <input type="number" id="customPct" step="0.01" placeholder="ex: 12.5" style="display:none;" min="0" max="100">
+        
+        <button onclick="calculerEnchere()">Calculer Enchère</button>
+        <div id="resultatEnchere" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="section">
+        <h2>⚖️ Prix du Gramme (Or/Bijoux)</h2>
+        <label>Prix article (€) :</label>
+        <input type="number" id="prixArticle" step="0.01" placeholder="ex: 1250">
+        
+        <label>Poids (grammes) :</label>
+        <input type="number" id="poids" step="0.01" placeholder="ex: 20.5">
+        
+        <button onclick="calculerGramme()">Calculer €/g</button>
+        <div id="resultatGramme" class="gramme-result" style="display:none;"></div>
+    </div>
 
     <script>
         const select = document.getElementById('pourcentage');
         const custom = document.getElementById('customPct');
-        select.onchange = () => {
-            custom.style.display = select.value === 'custom' ? 'block' : 'none';
-        };
-
-        function calculer() {
-            const prix = parseFloat(document.getElementById('prix').value);
-            let pct = parseFloat(select.value);
-            if (select.value === 'custom') pct = parseFloat(custom.value);
-            if (!prix || isNaN(pct)) return alert('Vérifiez les saisies');
-
-            const frais = (prix * pct / 100);
-            const final = prix + frais;
-            const pctFraisSurPrix = (frais / prix * 100).toFixed(2);
-
-            document.getElementById('resultat').innerHTML = `
-                <p><strong>Prix enchère :</strong> ${prix.toLocaleString('fr-FR')} €</p>
-                <p><strong>Frais (${pct}%):</strong> ${frais.toLocaleString('fr-FR', {minimumFractionDigits: 2})} €</p>
-                <p><strong>Prix final :</strong> ${final.toLocaleString('fr-FR', {minimumFractionDigits: 2})} €</p>
-                <p><strong>% frais / prix enchère :</strong> ${pctFraisSurPrix} %</p>
-            `;
-            document.getElementById('resultat').style.display = 'block';
-        }
-    </script>
-</body>
-</html>
+        se
