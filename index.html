@@ -3,55 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcul Frais Enchères & Prix Gramme</title>
+    <title>Calculateur Enchères & Historique</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; background: #f5f5f5; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
-        button { background: #007bff; color: white; padding: 12px; border: none; width: 100%; cursor: pointer; font-size: 16px; }
-        button:hover { background: #0056b3; }
-        .result { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .result p { font-size: 18px; margin: 10px 0; }
-        label { font-weight: bold; }
-        .section { background: white; padding: 25px; border-radius: 12px; margin: 30px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .section h2 { color: #333; margin-top: 0; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
-        .gramme-result { background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 5px solid #28a745; }
+        :root {
+            --primary: #007bff;
+            --success: #28a745;
+            --bg: #f4f7f6;
+        }
+        body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 20px auto; padding: 15px; background: var(--bg); color: #333; }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        .section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h2 { margin-top: 0; font-size: 1.2rem; border-left: 4px solid var(--primary); padding-left: 10px; }
+        
+        label { display: block; margin-top: 10px; font-weight: 600; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-calc { background: var(--primary); color: white; }
+        .btn-calc:hover { background: #0056b3; }
+        
+        .result-box { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; }
+        #resEnchere { background: #e7f1ff; border: 1px solid #b3d7ff; }
+        #resGramme { background: #e9f7ef; border: 1px solid #c3e6cb; }
+
+        /* Historique */
+        .history-container { margin-top: 30px; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; }
+        .btn-clear { background: #dc3545; color: white; padding: 5px 10px; font-size: 0.8rem; }
+        .history-list { margin-top: 10px; }
+        .history-item { background: white; padding: 12px; margin-bottom: 8px; border-radius: 8px; border-left: 4px solid #ccc; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .history-item.enchere { border-left-color: var(--primary); }
+        .history-item.or { border-left-color: var(--success); }
+        .history-item b { color: #000; }
     </style>
 </head>
 <body>
-    <h1>🛒 Calcul Enchères & Or</h1>
-    
+
+    <h1>🛒 Assistant Enchères</h1>
+
     <div class="section">
-        <h2>💰 Prix Final Enchère</h2>
-        <label>Prix de l'enchère (€) :</label>
-        <input type="number" id="prix" step="0.01" placeholder="ex: 18500">
+        <h2>💰 Calcul Frais de Vente</h2>
+        <label>Prix adjugé (€)</label>
+        <input type="number" id="prix" placeholder="ex: 12000">
         
-        <label>Frais de vente (%) :</label>
+        <label>Frais (%)</label>
         <select id="pourcentage">
-            <option value="14.4">14.4% TTC (Alcopa std)</option>
-            <option value="14.28">14.28% TTC (judiciaire)</option>
-            <option value="25">25% TTC (volontaire)</option>
-            <option value="16">16% (Interencheres)</option>
-            <option value="custom">Autre (%)</option>
+            <option value="14.4">14.4% (Alcopa / VPauto)</option>
+            <option value="14.28">14.28% (Judiciaire)</option>
+            <option value="25">25% (Volontaire / Art)</option>
+            <option value="custom">Autre % personnalisé</option>
         </select>
-        <input type="number" id="customPct" step="0.01" placeholder="ex: 12.5" style="display:none;" min="0" max="100">
+        <input type="number" id="customPct" placeholder="Entrez %" style="display:none; margin-top:10px;">
+
+        <label>Frais fixes / Dossier (€)</label>
+        <input type="number" id="fraisFixes" value="0">
         
-        <button onclick="calculerEnchere()">Calculer Enchère</button>
-        <div id="resultatEnchere" class="result" style="display:none;"></div>
+        <button class="btn-calc" onclick="calculerEnchere()">Calculer et Ajouter</button>
+        
+        <div id="resEnchere" class="result-box"></div>
     </div>
 
     <div class="section">
-        <h2>⚖️ Prix du Gramme (Or/Bijoux)</h2>
-        <label>Prix article (€) :</label>
-        <input type="number" id="prixArticle" step="0.01" placeholder="ex: 1250">
+        <h2>⚖️ Calcul au Gramme</h2>
+        <label>Prix total (€)</label>
+        <input type="number" id="prixArt" placeholder="ex: 850">
+        <label>Poids total (g)</label>
+        <input type="number" id="poids" placeholder="ex: 15.4">
         
-        <label>Poids (grammes) :</label>
-        <input type="number" id="poids" step="0.01" placeholder="ex: 20.5">
+        <button class="btn-calc" style="background: var(--success);" onclick="calculerGramme()">Calculer et Ajouter</button>
         
-        <button onclick="calculerGramme()">Calculer €/g</button>
-        <div id="resultatGramme" class="gramme-result" style="display:none;"></div>
+        <div id="resGramme" class="result-box"></div>
+    </div>
+
+    <div class="history-container">
+        <div class="history-header">
+            <h3>📜 Historique des calculs</h3>
+            <button class="btn-clear" onclick="viderHistorique()">Vider</button>
+        </div>
+        <div id="listeHistorique" class="history-list">
+            </div>
     </div>
 
     <script>
         const select = document.getElementById('pourcentage');
-        const custom = document.getElementById('customPct');
-        se
+        const customInput = document.getElementById('customPct');
+        const historique = document.getElementById('listeHistorique');
+
+        select.onchange = () => customInput.style.display = (select.value === 'custom') ? 'block' : 'none';
+
+        function ajouterAHistorique(type, texte) {
+            const div = document.createElement('div');
+            div.className = `history-item ${type}`;
+            div.innerHTML = `<span>${texte}</span> <small>${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>`;
+            historique.prepend(div); // Ajoute en haut de liste
+        }
+
+        function calculerEnchere() {
+            const brute = parseFloat(document.getElementById('prix').value);
+            const fixes = parseFloat(document.getElementById('fraisFixes').value) || 0;
+            let pct = (select.value === 'custom') ? parseFloat(customInput.value) : parseFloat(select.value);
+
+            if (!brute) return alert("Indiquez un prix");
+
+            const montantPct = brute * (pct / 100);
+            const total = brute + montantPct + fixes;
+
+            document.getElementById('resEnchere').style.display = 'block';
+            document.getElementById('resEnchere').innerHTML = `Total : <b>${total.toFixed(2)} €</b> (Frais : ${(montantPct + fixes).toFixed(2)}€)`;
+            
+            ajouterAHistorique('enchere', `🚗 Enchère: ${brute}€ + ${pct}% + ${fixes}€ = <b>${total.toFixed(2)} €</b>`);
+        }
+
+        function calculerGramme() {
+            const p = parseFloat(document.getElementById('prixArt').value);
+            const w = parseFloat(document.getElementById('poids').value);
+
+            if (!p || !w) return alert("Remplissez prix et poids");
+
+            const ratio = p / w;
+            document.getElementById('resGramme').style.display = 'block';
+            document.getElementById('resGramme').innerHTML = `Prix au g : <b>${ratio.toFixed(2)} €/g</b>`;
+            
+            ajouterAHistorique('or', `⚖️ Objet: ${p}€ pour ${w}g = <b>${ratio.toFixed(2)} €/g</b>`);
+        }
+
+        function viderHistorique() {
+            if(confirm("Effacer tout l'historique ?")) historique.innerHTML = "";
+        }
+    </script>
+</body>
+</html>
