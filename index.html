@@ -8,95 +8,182 @@
         :root {
             --primary: #007bff;
             --success: #28a745;
+            --danger: #dc3545;
             --bg: #f4f7f6;
+            --text: #333;
         }
-        body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 20px auto; padding: 15px; background: var(--bg); color: #333; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 15px; background: var(--bg); color: var(--text); }
         h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
-        .section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        h2 { margin-top: 0; font-size: 1.2rem; border-left: 4px solid var(--primary); padding-left: 10px; }
         
-        label { display: block; margin-top: 10px; font-weight: 600; font-size: 0.9rem; }
-        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .grid-forms { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
+        h2 { margin-top: 0; font-size: 1.1rem; border-left: 4px solid var(--primary); padding-left: 10px; height: fit-content; }
+        .section-or h2 { border-left-color: var(--success); }
         
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-calc { background: var(--primary); color: white; }
-        .btn-calc:hover { background: #0056b3; }
+        label { display: block; margin-top: 10px; font-weight: 600; font-size: 0.85rem; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
         
-        .result-box { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; }
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 14px; }
+        .btn-calc { width: 100%; margin-top: auto; padding-top: 15px; background: var(--primary); color: white; }
+        .btn-calc:hover { opacity: 0.9; }
+        
+        .result-box { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; animation: fadeIn 0.3s; font-size: 0.9rem; }
         #resEnchere { background: #e7f1ff; border: 1px solid #b3d7ff; }
         #resGramme { background: #e9f7ef; border: 1px solid #c3e6cb; }
 
         /* Historique */
         .history-container { margin-top: 30px; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; }
-        .btn-clear { background: #dc3545; color: white; padding: 5px 10px; font-size: 0.8rem; }
-        .history-list { margin-top: 10px; }
-        .history-item { background: white; padding: 12px; margin-bottom: 8px; border-radius: 8px; border-left: 4px solid #ccc; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .history-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .history-actions { display: flex; gap: 8px; }
+        
+        .btn-action { background: #6c757d; color: white; padding: 8px 15px; font-size: 0.8rem; }
+        .btn-clear { background: var(--danger); }
+        
+        .history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .history-column { display: flex; flex-direction: column; }
+        .history-column h4 { margin: 0 0 10px 0; font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+
+        .history-list { min-height: 50px; }
+        .history-item { 
+            background: white; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            border-radius: 10px; 
+            border-left: 5px solid #ccc; 
+            font-size: 0.85rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            animation: fadeIn 0.3s;
+        }
         .history-item.enchere { border-left-color: var(--primary); }
         .history-item.or { border-left-color: var(--success); }
-        .history-item b { color: #000; }
+        
+        .item-content { flex-grow: 1; padding-right: 10px; }
+        .item-meta { display: block; font-size: 0.7rem; color: #999; margin-top: 4px; }
+        
+        .btn-delete { background: none; color: #ddd; font-size: 1.1rem; padding: 0 5px; }
+        .btn-delete:hover { color: var(--danger); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-forms, .history-grid { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            body { background: white; margin: 0; padding: 0; }
+            .section, .btn-calc, .history-actions, .btn-delete, h1, .btn-clear, .history-column h4 { display: none !important; }
+            .history-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .history-item { border: 1px solid #eee; box-shadow: none; page-break-inside: avoid; }
+            .history-header h3::after { content: " - Rapport d'estimation"; }
+        }
     </style>
 </head>
 <body>
 
-    <h1>🛒 Assistant Enchères</h1>
+    <h1>🛒 Assistant d'Achat</h1>
 
-    <div class="section">
-        <h2>💰 Calcul Frais de Vente</h2>
-        <label>Prix adjugé (€)</label>
-        <input type="number" id="prix" placeholder="ex: 12000">
-        
-        <label>Frais (%)</label>
-        <select id="pourcentage">
-            <option value="14.4">14.4% (Alcopa / VPauto)</option>
-            <option value="14.28">14.28% (Judiciaire)</option>
-            <option value="25">25% (Volontaire / Art)</option>
-            <option value="custom">Autre % personnalisé</option>
-        </select>
-        <input type="number" id="customPct" placeholder="Entrez %" style="display:none; margin-top:10px;">
+    <div class="grid-forms">
+        <!-- FORMULAIRE ENCHÈRES -->
+        <div class="section section-enchere">
+            <h2>💰 Frais de Vente</h2>
+            <label>Prix adjugé (€)</label>
+            <input type="number" id="prix" placeholder="ex: 12000" inputmode="decimal">
+            
+            <label>Frais (%)</label>
+            <select id="pourcentage">
+                <option value="14.4">14.4% (Alcopa / VPauto)</option>
+                <option value="14.28">14.28% (Judiciaire)</option>
+                <option value="25">25% (Volontaire / Art)</option>
+                <option value="custom">Autre % personnalisé</option>
+            </select>
+            <input type="number" id="customPct" placeholder="Entrez %" style="display:none; margin-top:10px;" inputmode="decimal">
 
-        <label>Frais fixes / Dossier (€)</label>
-        <input type="number" id="fraisFixes" value="0">
-        
-        <button class="btn-calc" onclick="calculerEnchere()">Calculer et Ajouter</button>
-        
-        <div id="resEnchere" class="result-box"></div>
+            <label>Frais fixes / Dossier (€)</label>
+            <input type="number" id="fraisFixes" value="0" inputmode="decimal">
+            
+            <button class="btn-calc" onclick="calculerEnchere()">Calculer Enchère</button>
+            
+            <div id="resEnchere" class="result-box"></div>
+        </div>
+
+        <!-- FORMULAIRE OR -->
+        <div class="section section-or">
+            <h2>⚖️ Prix au Gramme</h2>
+            <label>Prix total payé (€)</label>
+            <input type="number" id="prixArt" placeholder="ex: 850" inputmode="decimal">
+            <label>Poids total (g)</label>
+            <input type="number" id="poids" placeholder="ex: 15.4" inputmode="decimal">
+            
+            <button class="btn-calc" style="background: var(--success);" onclick="calculerGramme()">Calculer Or</button>
+            
+            <div id="resGramme" class="result-box"></div>
+        </div>
     </div>
 
-    <div class="section">
-        <h2>⚖️ Calcul au Gramme</h2>
-        <label>Prix total (€)</label>
-        <input type="number" id="prixArt" placeholder="ex: 850">
-        <label>Poids total (g)</label>
-        <input type="number" id="poids" placeholder="ex: 15.4">
-        
-        <button class="btn-calc" style="background: var(--success);" onclick="calculerGramme()">Calculer et Ajouter</button>
-        
-        <div id="resGramme" class="result-box"></div>
-    </div>
-
+    <!-- HISTORIQUE SÉPARÉ -->
     <div class="history-container">
         <div class="history-header">
             <h3>📜 Historique des calculs</h3>
-            <button class="btn-clear" onclick="viderHistorique()">Vider</button>
-        </div>
-        <div id="listeHistorique" class="history-list">
+            <div class="history-actions">
+                <button class="btn-action" onclick="copierHistorique()">📋 Copier Tout</button>
+                <button class="btn-action" onclick="window.print()">🖨️ PDF</button>
+                <button class="btn-action btn-clear" onclick="viderHistorique()">🗑️ Vider</button>
             </div>
+        </div>
+
+        <div class="history-grid">
+            <!-- Colonne Enchères -->
+            <div class="history-column">
+                <h4>Véhicules & Lots</h4>
+                <div id="histEnchere" class="history-list"></div>
+            </div>
+
+            <!-- Colonne Or -->
+            <div class="history-column">
+                <h4>Bijoux & Métaux</h4>
+                <div id="histGramme" class="history-list"></div>
+            </div>
+        </div>
     </div>
 
     <script>
         const select = document.getElementById('pourcentage');
         const customInput = document.getElementById('customPct');
-        const historique = document.getElementById('listeHistorique');
+        const histEnchere = document.getElementById('histEnchere');
+        const histGramme = document.getElementById('histGramme');
 
         select.onchange = () => customInput.style.display = (select.value === 'custom') ? 'block' : 'none';
 
         function ajouterAHistorique(type, texte) {
+            const id = Date.now();
             const div = document.createElement('div');
             div.className = `history-item ${type}`;
-            div.innerHTML = `<span>${texte}</span> <small>${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>`;
-            historique.prepend(div); // Ajoute en haut de liste
+            div.id = `item-${id}`;
+            
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            div.innerHTML = `
+                <div class="item-content">
+                    <span>${texte}</span>
+                    <span class="item-meta">Ajouté à ${time}</span>
+                </div>
+                <button class="btn-delete" onclick="supprimerItem(${id})">×</button>
+            `;
+
+            // On cible la liste correspondante
+            const targetList = (type === 'enchere') ? histEnchere : histGramme;
+            targetList.prepend(div);
+        }
+
+        function supprimerItem(id) {
+            const item = document.getElementById(`item-${id}`);
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(20px)';
+            setTimeout(() => item.remove(), 250);
         }
 
         function calculerEnchere() {
@@ -104,32 +191,67 @@
             const fixes = parseFloat(document.getElementById('fraisFixes').value) || 0;
             let pct = (select.value === 'custom') ? parseFloat(customInput.value) : parseFloat(select.value);
 
-            if (!brute) return alert("Indiquez un prix");
+            if (isNaN(brute)) return alert("Veuillez indiquer un prix.");
+            if (isNaN(pct)) pct = 0;
 
             const montantPct = brute * (pct / 100);
             const total = brute + montantPct + fixes;
 
-            document.getElementById('resEnchere').style.display = 'block';
-            document.getElementById('resEnchere').innerHTML = `Total : <b>${total.toFixed(2)} €</b> (Frais : ${(montantPct + fixes).toFixed(2)}€)`;
+            const resBox = document.getElementById('resEnchere');
+            resBox.style.display = 'block';
+            resBox.innerHTML = `Total : <strong>${total.toFixed(2)} €</strong><br><small>Frais : ${(montantPct + fixes).toFixed(2)}€</small>`;
             
-            ajouterAHistorique('enchere', `🚗 Enchère: ${brute}€ + ${pct}% + ${fixes}€ = <b>${total.toFixed(2)} €</b>`);
+            ajouterAHistorique('enchere', `🚗 <b>Lot: ${brute.toLocaleString()}€</b> + ${pct}% + ${fixes}€ = <b>${total.toFixed(2)} €</b>`);
         }
 
         function calculerGramme() {
             const p = parseFloat(document.getElementById('prixArt').value);
             const w = parseFloat(document.getElementById('poids').value);
 
-            if (!p || !w) return alert("Remplissez prix et poids");
+            if (!p || !w) return alert("Remplissez le prix et le poids");
 
             const ratio = p / w;
-            document.getElementById('resGramme').style.display = 'block';
-            document.getElementById('resGramme').innerHTML = `Prix au g : <b>${ratio.toFixed(2)} €/g</b>`;
+            const resBox = document.getElementById('resGramme');
+            resBox.style.display = 'block';
+            resBox.innerHTML = `Ratio : <strong>${ratio.toFixed(2)} €/g</strong>`;
             
-            ajouterAHistorique('or', `⚖️ Objet: ${p}€ pour ${w}g = <b>${ratio.toFixed(2)} €/g</b>`);
+            ajouterAHistorique('or', `⚖️ <b>Or: ${p.toLocaleString()}€</b> / ${w}g = <b>${ratio.toFixed(2)} €/g</b>`);
         }
 
         function viderHistorique() {
-            if(confirm("Effacer tout l'historique ?")) historique.innerHTML = "";
+            if(confirm("Effacer tout l'historique ?")) {
+                histEnchere.innerHTML = "";
+                histGramme.innerHTML = "";
+            }
+        }
+
+        function copierHistorique() {
+            const listEnchere = document.querySelectorAll('#histEnchere .history-item .item-content span:first-child');
+            const listGramme = document.querySelectorAll('#histGramme .history-item .item-content span:first-child');
+            
+            if (listEnchere.length === 0 && listGramme.length === 0) return alert("L'historique est vide.");
+            
+            let texte = "--- RÉCAPITULATIF DES CALCULS ---\n\n";
+            
+            if (listEnchere.length > 0) {
+                texte += "💰 ENCHÈRES :\n";
+                listEnchere.forEach(item => texte += "- " + item.innerText + "\n");
+                texte += "\n";
+            }
+            
+            if (listGramme.length > 0) {
+                texte += "⚖️ OR / GRAMME :\n";
+                listGramme.forEach(item => texte += "- " + item.innerText + "\n");
+            }
+
+            const el = document.createElement('textarea');
+            el.value = texte;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            alert("Historique copié !");
         }
     </script>
 </body>
